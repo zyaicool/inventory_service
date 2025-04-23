@@ -5,9 +5,11 @@ import com.example.inventory_service.services.ItemService;
 import com.example.inventory_service.utilities.SimpleResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 @RequestMapping("/items")
 public class ItemController {
 
@@ -30,8 +32,11 @@ public class ItemController {
     }
 
     @GetMapping
-    public SimpleResponse listItem() {
-        return itemService.listItem();
+    public SimpleResponse listItem(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return itemService.listItem(page, size);
     }
 
     @DeleteMapping("/{id}")
