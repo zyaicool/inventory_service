@@ -22,4 +22,13 @@ public class ItemDtos {
         @Min(value = 0, message = "Price must be greater than or equal to 0")
         private Double price;
     }
+
+    @Getter
+    @Setter
+    public static class MapItem{
+        private Long id;
+        private String name;
+        private Double price;
+        private Integer qty;
+    }
 }
