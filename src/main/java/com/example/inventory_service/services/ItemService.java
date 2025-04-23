@@ -131,7 +131,7 @@ public class ItemService {
 
     }
 
-    private Integer getQuantityForItem(Long itemId) {
+    public Integer getQuantityForItem(Long itemId) {
         List<Inventory> inventories = inventoryRepository.findAllByItemId(itemId);
         Integer countQty = 0;
         for(Inventory inv : inventories){
