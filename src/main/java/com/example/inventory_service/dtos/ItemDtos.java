@@ -12,14 +12,14 @@ public class ItemDtos {
 
     @Getter
     @Setter
-    public static class CreateUpdateItem{
+    public static class CreateUpdateItem {
 
         @NotBlank(message = "Name must not be blank")
         @Size(max = 100, message = "Name must be at most 100 characters")
-        String name;
+        private String name;
 
         @NotNull(message = "Price is required")
         @Min(value = 0, message = "Price must be greater than or equal to 0")
-        Double price;
+        private Double price;
     }
 }

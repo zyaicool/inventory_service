@@ -8,6 +8,9 @@ import com.example.inventory_service.utilities.SimpleResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -66,18 +69,33 @@ public class ItemService {
 
     }
 
-    public SimpleResponse listItem(){
-        try{
-            List<Item> getItem = itemRepository.findAll();
-            if (getItem.isEmpty()) {
-                return new SimpleResponse(GeneralConstants.BAD_REQUEST, "Data Not Exist !!!!", new HashMap<String, Object>());
+    public SimpleResponse listItem(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Item> itemPage = itemRepository.findAll(pageable);
+
+            if (itemPage.isEmpty()) {
+                return new SimpleResponse(
+                        GeneralConstants.BAD_REQUEST,
+                        "Data Not Exist !!!!",
+                        new HashMap<String, Object>()
+                );
             }
 
-            return new SimpleResponse(GeneralConstants.SUCCESS_CODE, GeneralConstants.SUCCESS, getItem);
-        }catch (Exception e){
-            return new SimpleResponse(GeneralConstants.FAIL_CODE, e.getMessage(), new HashMap<String, Object>());
-        }
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("items", itemPage.getContent());
+            response.put("currentPage", itemPage.getNumber());
+            response.put("totalItems", itemPage.getTotalElements());
+            response.put("totalPages", itemPage.getTotalPages());
 
+            return new SimpleResponse(
+                    GeneralConstants.SUCCESS_CODE,
+                    GeneralConstants.SUCCESS,
+                    response
+            );
+        } catch (Exception e) {
+            return new SimpleResponse(GeneralConstants.FAIL_CODE, e.getMessage(), new HashMap<>());
+        }
     }
 
     public SimpleResponse deleteItem(Long id){
@@ -88,7 +106,7 @@ public class ItemService {
             }
 
             itemRepository.deleteById(id);
-            return new SimpleResponse(GeneralConstants.SUCCESS_CODE, GeneralConstants.SUCCESS, getItem);
+            return new SimpleResponse(GeneralConstants.SUCCESS_CODE, GeneralConstants.SUCCESS, new HashMap<String, Object>());
         }catch (Exception e){
             return new SimpleResponse(GeneralConstants.FAIL_CODE, e.getMessage(), new HashMap<String, Object>());
         }
